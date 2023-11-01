@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: default
+  
+spec:
+  podSelector: {} 
+  policyTypes:
+    - Ingress
+    - Egress
+    ###by default all the ingress and egress routing is enable
+    ###we will disable using the above mentioned policy

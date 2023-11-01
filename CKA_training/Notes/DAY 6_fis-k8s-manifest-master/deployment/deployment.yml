@@ -1,0 +1,23 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: myapp-nginx 
+
+spec: #specification about deployment
+  replicas: 3 #first specification is replicas
+  #second specification about your deployment is how we are connecting all the three pod 
+  ##3using something called as selecto.mathLabels
+  selector: #selector field define how the Dpeloyment will fin which pod tp manage. 
+    matchLabels: #match express and provide the same lable
+      app: myapp
+      ###inside this three pod using template defination we are going to deploy our image
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: nginx:1.14.2 
+        ports:
+        - containerPort: 80

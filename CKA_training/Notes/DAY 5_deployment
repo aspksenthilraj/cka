@@ -1,0 +1,40 @@
+###clone the repo
+  git clone https://github.com/gopal1409/aspire-manifest.git
+##lets deploy it
+   91  cd aspire-manifest/
+   92  ls
+   93  kubectl apply -f deploymen.yml
+   94  kubectl get deployment
+   95  kubectl get rs
+   96  kubectl get pod
+##three different way to update the deployment
+107  git pull
+  108  kubectl apply -f deploymen.yml
+  109  kubectl describe deploy myapp-deployment
+  110  kubectl rollout status deployment/myapp-deployment
+###you can updat the same using command line
+  111  kubectl set image deployment myapp-deployment myweb=nginx:1.14.2
+  112  kubectl describe deploy myapp-deployment
+  113  kubectl get deploy
+##you can update using run configuration
+  114  kubectl edit deploy myapp-deployment
+###search for image change the image nginx:1.16.1
+  115  kubectl describe deploy myapp-deployment
+####rollback 
+119  kubectl set image deployment myapp-deployment myweb=nginx:1.161
+  120  kubectl rollout status deployment myapp-deployment
+  121  kubectl get rs
+  122  kubectl get pod
+  123  kubectl rollout history deployment myapp-deployment
+  124  kubectl rollout history deployment myapp-deployment --revision=5
+  125  kubectl rollout history deployment myapp-deployment --revision=4
+  126  kubectl rollout undo  deployment myapp-deployment
+  127  kubectl rollout undo  deployment myapp-deployment --to-revision=3
+  128  kubectl describe deploy
+##autoscaling in the pod
+ 133  kubectl get deploy
+  134  kubectl scale deploy myapp-deployment --replicas=4
+  135  kubectl get deploy
+  136  kubectl autoscale deploy myapp-deployment --min=5 --max=10 --cpu-percent=80
+  137  kubectl get deploy
+  138  kubectl get hpa

@@ -1,0 +1,14 @@
+###we know that all the intraction to your k8s cluster happen through api
+apiVersion: v1
+kind: Pod #kubernetes entity
+metadata:
+  name: myapp-pod #inside your k8s cluster we need to create a pod.  
+spec: 
+  initContainers:
+  - name: init-myservice 
+    image: busybox:1.28 
+    command: ['sh','-c','until nslookup myservice; do echo wating for my service; sleep 5; done;']
+  containers:
+  - name: myapp-container 
+    image: busybox:1.28
+    command: ['sh','-c','echo app is running! && sleep 3600']

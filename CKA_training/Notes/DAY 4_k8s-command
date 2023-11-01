@@ -1,0 +1,43 @@
+    2  kubectl get nodes
+    3  kubectl get pod --all-namespaces
+####in place of docker we are using crictl as an command to check our containers
+    4  crictl ps
+    5  crictl images
+crictl
+###to join worker with master run this command in the master machine
+
+ kubeadm token create --print-join-command --ttl 0
+
+###check the node status 
+ 13  kubectl get nodes
+   14  kubectl describe node ip-172-31-84-170
+####all the master node component configuration file are in this particular directory
+  17  cd /etc/kubernetes/
+   18  ls
+   19  cd manifests/
+   20  ls
+   21  cat etcd.yaml
+###deploy our first pod in worker node
+ 47  kubectl run my-first-pod --image=nginx --port=80 --dry-run=client -o yaml > pod.yml
+   48  cat pod.yml
+   49  kubectl apply -f pod.yml
+   50  kubectl get pod
+#### edit an running configuration 
+kubectl edit pod my-first-pod
+
+###after making change Press Esc :wq!
+
+   51  kubectl describe pod my-first-pod
+   52  kubectl get nodes
+   53  kubectl get pod -o wide
+#### edit an running configuration 
+kubectl edit pod my-first-pod
+
+###after making change Press Esc :wq!
+
+###delete the pod
+  62  kubectl get pod
+   63  kubectl delete pod my-first-pod
+   64  kubectl get pod
+
+
