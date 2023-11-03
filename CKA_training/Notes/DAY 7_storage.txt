@@ -1,0 +1,30 @@
+###we will login to the second vm
+  sudo -i
+  mkdir /mnt/data
+  ls /mnt/data
+
+###once we create the directory we will get back to the master machine and create the persistent volume
+###below mentioned activity need to be done in master machine only
+ 180  cd aspire-manifest/
+  181  git pull
+  182  kubectl apply -f pv.yml
+  183  kubectl get pv
+  184  kubectl describe pv task-pv-volume
+###lets create the pvc and map the same with pv
+ 193  git pull
+  194  kubectl apply -f pvc.yml
+  195  kubectl get pv
+  196  kubectl get pvc
+##lets add the secret
+  200  git pull
+  201  kubectl apply -f secret.yml
+  202  kubectl get secret
+  203  kubectl describe secret mysql-db-passowrd
+###lets deploy configmap
+ 206  git pull
+  207  kubectl apply -f configmap.yml
+  208  kubectl get configmap
+  209  kubectl describe configmap usermanagement-db-creation-script
+
+
+
