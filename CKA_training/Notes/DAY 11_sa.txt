@@ -1,0 +1,69 @@
+create a new service account jane-cicd user inside a namespace project-hamster. create a role and rolebinding. both the role and rolebinding will have a name called as processor. 
+these should allow the new sa to create secrets and configmap in the namespace. plus they will say that the sa account need to verify they have access or not. 
+
+1. lets create the namespace project-hamster
+ 325  kubectl create ns project-hamster
+  326  kubectl get ns
+##3lets create the service account jane
+ 330  kubectl -n project-hamster create sa jane --dry-run=client -o yaml
+  331  kubectl -n project-hamster create sa jane
+  332  kubectl -n project-hamster get sa
+####we will create a role
+ 335  kubectl -n project-hamster create role -h
+  336  kubectl -n project-hamester create role processor --verb=create --resource=secrets --resource=configmap --dry-run -o yaml
+  338  kubectl get ns
+  339  kubectl -n project-hamster create role processor --verb=create --resource=secrets --resource=configmap
+  340  kubectl get role -n  project-hamster
+###bind the role service account. 
+347  kubectl -n project-hamster create rolebinding processor --role processor --serviceaccount project-hamster:jane --dry-run=client -o yaml
+  348  kubectl -n project-hamster create rolebinding processor --role processor --serviceaccount project-hamster:jane
+  349  kubectl get rolebinding
+  350  kubectl get rolebinding -n project-hamster
+
+###verify the RBAC setup we can use k8s auth can-i
+360  kubectl -n project-hamster auth can-i create secret --as system:serviceaccount:project-hamster:jane
+  361  kubectl -n project-hamster auth can-i create configmap --as system:serviceaccount:project-hamster:jane
+  362  kubectl -n project-hamster auth can-i create pod --as system:serviceaccount:project-hamster:jane
+  363  kubectl -n project-hamster auth can-i create deployment --as system:serviceaccount:project-hamster:jane
+##need to verify the same using curl request that we can do this activity or not
+curl --cacert <file containing CA Certificate> -H "Authorization: Bearer eyJhb...<token value here>" https://73.112.123.115:6443/api/v1/namespaces/default/pods
+####lets start searching for --cacert will be the certificate autority of kubernetes master machine. 
+/etc/kubernetes/pki/ca.crt
+##bearer token is of the service account
+###lets generate the bearer token
+kubectl -n project-hamster create token jane
+
+###lets find the url of the master machine
+ cat /root/.kube/config
+inside this you will find the url of the k8s master machine which run the api
+ https://172.31.85.2:6443
+
+https://73.112.123.115:6443/api/v1/namespaces/default/pods ##this is the url or your kubernetes master machine
+
+####lets do the curl request
+###we will generate a token
+kubectl -n project-hamster create token jane
+###we will create a secret.yml
+###vi secret.yml
+######inside the file we will add this secret
+
+#####press esc i
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-db-pass #name
+  namespace: project-hamster
+type: Opaque
+data:
+  password: ZGJwYXNzd29yZDEx #key
+###save the file using Press Esc :wq
+
+curl -X POST https://172.31.85.2:6443/api/v1/namespaces/project-hamster/secrets -H "Authorization: Bearer  " -H "Content-Type: application/yaml" --data-binary @secret.yml --cacert /etc/kubernetes/pki/ca.crt
+####verify the secret
+kubectl get secret
+####verify the pipeline is running or not
+kubectl get pod
+###check for pod name which start with 
+##3gitlab-runner
+##3open the flotting log 
+kubectl -f logs gitlab-runner-pod

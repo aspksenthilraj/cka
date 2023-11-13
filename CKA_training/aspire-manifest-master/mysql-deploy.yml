@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mysql 
+  template:
+    metadata:
+      labels:
+        app: mysql 
+    spec:
+    ##in this specification we have two block one is container second is volumes
+      containers:
+      - name: mysql 
+        image: mysql:5.6
+        env:
+          - name: MYSQL_ROOT_PASSWORD #this env varaible is avaiable iun the container image
+            valueFrom:
+              secretKeyRef:
+                name: mysql-db-passowrd
+                key: password
+        ports:
+        - containerPort: 3306
+      ###when i deploy this container. it should map with your pvc
+        volumeMounts:
+          - name: mysql-pvc
+            mountPath: /var/lib/mysql
+          - name: usermgmt-script 
+            mountPath: /docker-entrypoint-initdb.d
+      volumes: 
+        - name: mysql-pvc
+          persistentVolumeClaim:
+            claimName: task-pv-claim
+        - name: usermgmt-script
+          configMap:
+            name: usermgmt-database-script
+            #this is going to run while launching your mysql pod
+            ###volume mount name and volume name should match
