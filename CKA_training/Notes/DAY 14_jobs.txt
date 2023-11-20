@@ -1,0 +1,44 @@
+  849  cd aspire-manifest/
+  850  git pull
+  851  kubectl apply -f jobs.yml
+  852  kubectl get jobs
+  853  kubectl get pod
+  854  kubectl logs node-app-job-xw82g
+####unlike deployment and service in kjubernetes you cant change the same job configuration file and reapply it once again. 
+if you want to reapply it you need to delete the job and recreate it. 
+ 859  git pull
+  860  kubectl apply -f jobs.yml
+  ####delete a job and reapply
+ 862  kubectl get job
+  863  kubectl delete job node-app-job
+  864  kubectl get pod
+  865  kubectl apply -f jobs.yml
+  866  kubectl get pod
+###completion and parrelisim
+ 870  kubectl delete jobs node-app-job
+  871  git pull
+  872  kubectl apply -f jobs.yml
+  873  kubectl get job
+  874  kubectl get pod
+####r5etry jobs
+ 877  git pull
+  878  kubectl get job
+  879  kubectl delete job node-app-job
+  880  kubectl apply -f jobs.yml
+  881  kubectl get pod
+  882  watch kubectl get pod
+  883  kubectl delete job node-app-job
+#######retying job using activedeadline
+ 886  git pull
+  887  kubectl delete job node-app-job
+  888  kubectl apply -f jobs.yml
+  889  watch kubectl get pod
+to comout after the third pod press control c
+###job timing for 70 hours
+  893  kubectl delete job node-app-job
+  895  kubectl get job
+  896  git pull
+  897  kubectl apply -f jobs.yml
+  898  watch kubectl get pod
+
+
